@@ -21,6 +21,11 @@ def update(val):
     global pixel_size
     pixel_size = int(slider.val)
 
+# Function to close the webcam and the window
+def close(event):
+    cap.release()
+    plt.close()
+
 # Initialize the webcam
 cap = cv2.VideoCapture(0)
 
@@ -54,9 +59,12 @@ ax_slider = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=axcolor)
 slider = Slider(ax_slider, 'Pixel Size', 1, 30, valinit=pixel_size, valstep=1)
 slider.on_changed(update)
 
+# Connect the close event
+fig.canvas.mpl_connect('close_event', close)
+
 # Update the image continuously
 def update_frame():
-    while True:
+    while plt.fignum_exists(fig.number):
         ret, frame = cap.read()
         if not ret:
             break
